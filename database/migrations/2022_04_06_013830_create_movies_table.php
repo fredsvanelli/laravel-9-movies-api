@@ -15,12 +15,12 @@ return new class() extends Migration {
         Schema::create('movies', function (Blueprint $table) {
             $table->id();
             $table->string('slug')->unique();
-            $table->string('title');
+            $table->string('title')->unique();
             $table->string('description')->nullable();
             $table->string('director')->nullable();
-            $table->smallInteger('year')->unsigned();
-            $table->smallInteger('duration')->unsigned();
-            $table->tinyInteger('score')->unsigned();
+            $table->string('year')->nullable();
+            $table->smallInteger('duration')->unsigned()->nullable();
+            $table->tinyInteger('score')->unsigned()->nullable();
             $table->string('cover')->nullable();
             $table->string('trailer')->nullable();
             $table->timestamps();

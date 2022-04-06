@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Models\Movie;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class MovieRequest extends FormRequest
@@ -24,7 +23,7 @@ class MovieRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(Request $request)
+    public function rules()
     {
         $movie = $this->movie;
 
@@ -35,10 +34,10 @@ class MovieRequest extends FormRequest
                 Rule::unique(Movie::class, 'title')->ignore($movie),
             ],
             'description' => 'sometimes|string|nullable',
-            'director' => 'required|string',
-            'year' => 'required|integer|digits:4',
-            'duration' => 'required|integer',
-            'score' => 'required|integer',
+            'director' => 'sometimes|string|nullable',
+            'year' => 'sometimes|integer|digits:4|nullable',
+            'duration' => 'sometimes|integer|nullable',
+            'score' => 'sometimes|integer|nullable',
             'cover' => 'sometimes|string|nullable',
             'trailer' => 'sometimes|string|nullable',
         ];
