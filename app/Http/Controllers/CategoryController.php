@@ -15,10 +15,19 @@ class CategoryController extends Controller
     {
         $query = Category::query()->orderBy('name');
 
+        if ($request->search){
+            $query->where('name', 'like', "%{$request->search}%");
+        }
+
+        $query->orderBy(
+            $request->input('order_by', 'name'),
+            $request->input('order', 'asc')
+        );
+
         if ($request->has('all')) {
             $categories = $query->get();
         } else {
-            $categories = $query->paginate(36);
+            $categories = $query->paginate($request->input('per_page', 36));
         }
 
         return CategoryResource::collection($categories);

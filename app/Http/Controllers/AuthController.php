@@ -12,7 +12,7 @@ class AuthController extends Controller
     {
         if (!Auth::attempt($request->only(['email', 'password']))) {
             return response()->json([
-                'Invalid credentials',
+                'message' => 'Invalid credentials',
                 Response::HTTP_UNAUTHORIZED,
             ]);
         }
@@ -22,10 +22,7 @@ class AuthController extends Controller
         $user->tokens()->delete();
         $token = $user->createToken('jwt')->plainTextToken;
 
-        return response()->json([
-            'message' => 'success',
-            'token' => $token,
-        ]);
+        return response()->json(['token' => $token]);
     }
 
     public function user()

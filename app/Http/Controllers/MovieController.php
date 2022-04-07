@@ -13,7 +13,7 @@ class MovieController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Movie::query()->with(['categories']);
+        $query = Movie::query()->with(['categories', 'actors']);
 
         if ($request->category){
             $query->whereHas('categories', function($q) use ($request){
@@ -21,7 +21,14 @@ class MovieController extends Controller
             });
         }
 
-        $movies = $query->paginate(36);
+        if ($request->search){
+            $query->where('title', 'like', "%{$request->search}%");
+        }
+
+        $movies = $query->orderBy(
+            $request->input('order_by', 'id'),
+            $request->input('order', 'desc')
+        )->paginate($request->input('per_page', 36));
 
         return MovieResource::collection($movies);
     }
@@ -39,14 +46,24 @@ class MovieController extends Controller
             $movie->categories()->attach($request->categories);
         }
 
-        $movie->load(['categories']);
+        if ($request->filled('actors')){
+            $i = 0;
+            $actors = [];
+            foreach ($request->actors as $actor){
+                $actors[$actor] = ['order' => $i++];
+            }
+
+            $movie->actors()->attach($actors);
+        }
+
+        $movie->load(['categories', 'actors']);
 
         return (new MovieResource($movie))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Movie $movie)
     {
-        $movie->load(['categories']);
+        $movie->load(['categories', 'actors']);
 
         return new MovieResource($movie);
     }
@@ -62,7 +79,17 @@ class MovieController extends Controller
 
         $movie->categories()->sync($request->categories ?? []);
 
-        $movie->load(['categories']);
+        if ($request->filled('actors')){
+            $i = 0;
+            $actors = [];
+            foreach ($request->actors as $actor){
+                $actors[$actor] = ['order' => $i++];
+            }
+
+            $movie->actors()->sync($actors);
+        }
+
+        $movie->load(['categories', 'actors']);
 
         return new MovieResource($movie);
     }
