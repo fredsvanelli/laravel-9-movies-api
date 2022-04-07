@@ -5,14 +5,25 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MovieRequest;
 use App\Http\Resources\MovieResource;
 use App\Models\Movie;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class MovieController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return MovieResource::collection(Movie::paginate(36));
+        $query = Movie::query()->with(['categories']);
+
+        if ($request->category){
+            $query->whereHas('categories', function($q) use ($request){
+                $q->where('categories.slug', $request->category);
+            });
+        }
+
+        $movies = $query->paginate(36);
+
+        return MovieResource::collection($movies);
     }
 
     public function store(MovieRequest $request)
@@ -24,11 +35,19 @@ class MovieController extends Controller
             ['slug' => Str::slug($request->title)]
         ));
 
+        if ($request->filled('categories')){
+            $movie->categories()->attach($request->categories);
+        }
+
+        $movie->load(['categories']);
+
         return (new MovieResource($movie))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Movie $movie)
     {
+        $movie->load(['categories']);
+
         return new MovieResource($movie);
     }
 
@@ -40,6 +59,10 @@ class MovieController extends Controller
             $data,
             ['slug' => Str::slug($request->title)]
         ))->save();
+
+        $movie->categories()->sync($request->categories ?? []);
+
+        $movie->load(['categories']);
 
         return new MovieResource($movie);
     }

@@ -8,21 +8,11 @@ use Illuminate\Validation\Rule;
 
 class MovieRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         $movie = $this->movie;
@@ -37,9 +27,18 @@ class MovieRequest extends FormRequest
             'director' => 'sometimes|string|nullable',
             'year' => 'sometimes|integer|digits:4|nullable',
             'duration' => 'sometimes|integer|nullable',
-            'score' => 'sometimes|integer|nullable',
+            'score' => 'sometimes|numeric|between:0,10|nullable',
             'cover' => 'sometimes|string|nullable',
             'trailer' => 'sometimes|string|nullable',
+            'categories' => 'sometimes|array',
+            'categories.*' => 'required|integer|exists:categories,id',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'categories.*.exists' => 'The selected category ID is invalid.',
         ];
     }
 }

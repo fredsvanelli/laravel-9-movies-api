@@ -16,11 +16,11 @@ return new class() extends Migration {
             $table->id();
             $table->string('slug')->unique();
             $table->string('title')->unique();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('director')->nullable();
             $table->string('year')->nullable();
             $table->smallInteger('duration')->unsigned()->nullable();
-            $table->tinyInteger('score')->unsigned()->nullable();
+            $table->decimal('score', 2, 1)->unsigned()->nullable();
             $table->string('cover')->nullable();
             $table->string('trailer')->nullable();
             $table->timestamps();

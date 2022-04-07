@@ -21,8 +21,17 @@ class Movie extends Model
         'trailer',
     ];
 
+    protected $casts = [
+        'score' => 'float',
+    ];
+
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
     }
 }
