@@ -22,6 +22,7 @@ class Movie extends Model
     ];
 
     protected $casts = [
+        'year' => 'integer',
         'score' => 'float',
     ];
 

@@ -32,6 +32,8 @@ class MovieRequest extends FormRequest
             'trailer' => 'sometimes|string|nullable',
             'categories' => 'sometimes|array',
             'categories.*' => 'required|integer|exists:categories,id',
+            'actors' => 'sometimes|array',
+            'actors.*' => 'required|integer|exists:actors,id',
         ];
     }
 
@@ -39,6 +41,7 @@ class MovieRequest extends FormRequest
     {
         return [
             'categories.*.exists' => 'The selected category ID is invalid.',
+            'actors.*.exists' => 'The selected actor ID is invalid.',
         ];
     }
 }
