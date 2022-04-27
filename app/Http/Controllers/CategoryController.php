@@ -24,6 +24,10 @@ class CategoryController extends Controller
             $request->input('order', 'asc')
         );
 
+        if ($request->has('with_movies')){
+            $query->with(['movies.categories']);
+        }
+
         if ($request->has('all')) {
             $categories = $query->get();
         } else {
