@@ -13,7 +13,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::query()->orderBy('name');
+        $query = Category::query();
 
         if ($request->search){
             $query->where('name', 'like', "%{$request->search}%");
