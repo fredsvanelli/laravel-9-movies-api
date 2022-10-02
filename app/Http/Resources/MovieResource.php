@@ -11,8 +11,8 @@ class MovieResource extends JsonResource
         return array_merge(
             parent::toArray($request),
             [
-                'categories' => $this->whenLoaded('categories'),
-                'actors' => $this->whenLoaded('actors'),
+                'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+                'actors' => ActorResource::collection($this->whenLoaded('actors')),
             ]
         );
     }

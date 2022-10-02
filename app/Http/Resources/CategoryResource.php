@@ -8,10 +8,11 @@ class CategoryResource extends JsonResource
 {
     public function toArray($request)
     {
-        $data = parent::toArray($request);
-
-        return array_merge($data, [
-            'movies' => $this->whenLoaded('movies'),
-        ]);
+        return array_merge(
+            parent::toArray($request),
+            [
+                'movies' => MovieResource::collection($this->whenLoaded('movies'))
+            ]
+        );
     }
 }

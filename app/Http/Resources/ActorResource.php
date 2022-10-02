@@ -10,7 +10,9 @@ class ActorResource extends JsonResource
     {
         return array_merge(
             parent::toArray($request),
-            ['movies' => $this->whenLoaded('movies')]
+            [
+                'movies' => MovieResource::collection($this->whenLoaded('movies'))
+            ]
         );
     }
 }

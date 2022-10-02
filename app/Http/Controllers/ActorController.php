@@ -13,10 +13,14 @@ class ActorController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Actor::query()->with(['movies']);
+        $query = Actor::query();
 
         if ($request->search){
             $query->where('name', 'like', "%{$request->search}%");
+        }
+
+        if ($request->has('with_movies')){
+            $query->with(['movies.categories']);
         }
 
         $actors = $query->orderBy(

@@ -13,7 +13,11 @@ class MovieController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Movie::query()->with(['categories', 'actors']);
+        $query = Movie::query()->with('categories');
+
+        if ($request->has('with_actors')){
+            $query->with('actors');
+        }
 
         if ($request->category){
             $query->whereHas('categories', function($q) use ($request){
